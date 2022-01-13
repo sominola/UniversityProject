@@ -1,6 +1,4 @@
-﻿using System.Security.Authentication;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.JsonWebTokens;
 using UniversityProject.Data.Entities;
@@ -14,14 +12,12 @@ namespace UniversityProject.Domain.Services.Implementation;
 public class AuthService
 {
     private readonly ITokenService _tokenService;
-    private readonly IHttpContextAccessor _context;
     private readonly PasswordHasher<User> _passwordHasher;
     private readonly IUnitOfWork _unitOfWork;
 
-    public AuthService(ITokenService tokenService, IHttpContextAccessor context, IUnitOfWork unitOfWork)
+    public AuthService(ITokenService tokenService, IUnitOfWork unitOfWork)
     {
         _tokenService = tokenService;
-        _context = context;
         _unitOfWork = unitOfWork;
         _passwordHasher = new PasswordHasher<User>();
     }
