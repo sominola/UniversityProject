@@ -81,7 +81,7 @@ public static class ConfigureExtension
         }
         else
         {
-            connectionString = Configuration.GetConnectionString("DefaultConnection");
+            connectionString = Configuration.GetConnectionString("MyDbConnection");
         }
 
         // services.AddDbContext<AppDbContext>(options =>
