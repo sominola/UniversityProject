@@ -1,0 +1,13 @@
+﻿@if (!User.Identity.IsAuthenticated)
+{
+    <li><a class="dropdown-item" asp-page="/Account/Login">Login</a></li>
+    <li><a class="dropdown-item" asp-page="/Account/Register">Register</a></li>
+}
+// else
+@* { *@
+@*     <li><a class="dropdown-item" href="#">Wishlist</a></li> *@
+@*     <li><a class="dropdown-item" href="@Url.ActionLink("Index", "Account")">Settings</a></li> *@
+@* *@
+@*     <li> <form asp-controller="Account" asp-action="Logout" method="post"> *@
+@*         <button class="btn button-link" type="submit">Logout</button></form></li> *@
+@* } *@
