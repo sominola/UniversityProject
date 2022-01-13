@@ -1,0 +1,40 @@
+﻿@page "/register"
+@using UniversityProject.Web.Pages.Account
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register page";
+}
+
+<div class="container" style="margin: 75px auto;">
+    <div class="custom-form">
+        <h3 style="margin-right: auto;">@ViewBag.Title</h3>
+        <div class="row justify-content-center">
+            <div class="custom-form-wrapper col-lg-7 col-md-12">
+                <div class="custom-form-container">
+                    <form method="post">
+                        <div class="validation" asp-validation-summary="ModelOnly"></div>
+                        
+                        <span asp-validation-for="RegisterDto.FirstName"></span>
+                        <input asp-for="RegisterDto.FirstName" placeholder="First Name">
+
+                        <span asp-validation-for="RegisterDto.LastName"></span>
+                        <input asp-for="RegisterDto.LastName" placeholder="Last Name">
+
+                        <span asp-validation-for="RegisterDto.Email"></span>
+                        <input asp-for="RegisterDto.Email" placeholder="Email">
+
+                        <span asp-validation-for="RegisterDto.Password"></span>
+                        <input asp-for="RegisterDto.Password" type="password" placeholder="Password">
+
+                        
+                        <div class="button-box">
+                            <button type="submit">
+                                <span>Register</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>
+        @(ViewBag.Title ??= "University")
+    </title>
+
+    <!-- MetaPartial -->
+    @await Html.PartialAsync("MetaTagsPartial")
+    <!-- Css Styles -->
+    @await Html.PartialAsync("CssPartial")
+
+
+</head>
+
+<body>
+<!-- Header Section Begin -->
+@await Html.PartialAsync("HeaderPartial")
+<!-- Header End -->
+<main>
+    @RenderBody()
+</main>
+
+<!-- Footer Section Begin -->
+@* @await Html.PartialAsync("FooterPartial") *@
+<!-- Footer Section End -->
+
+<!-- Js Plugins -->
+@await Html.PartialAsync("ScriptsPartial")
+
+</body>
+
+</html>

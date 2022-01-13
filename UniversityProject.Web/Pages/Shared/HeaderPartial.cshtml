@@ -1,0 +1,52 @@
+﻿<header>
+    <nav class="navbar navbar-expand-lg header">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="@Url.ActionLink("Index", "Home")">University</a>
+            <button
+                class="header-button"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">
+                    <i class="fal fa-bars"></i>
+                </span>
+            </button>
+            <div class="collapse navbar-collapse header-bar" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 header-item">
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.ActionLink("Index", "Home")">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.ActionLink("Index", "Products")">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link">Contact</a>
+                    </li>
+                </ul>
+                <nav class="nav nav-pills flex-column flex-sm-row icon-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fal fa-user"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @await Html.PartialAsync("AccountMenuPartial")
+                        </ul>
+                    </li>
+                    <a class="text-sm-center nav-link" href="#">
+                        <i class="fal fa-heart">
+                        </i
+                        >
+                    </a>
+                    <a class="text-sm-center nav-link" href="#">
+                        <i class="fal fa-shopping-bag">
+                        </i
+                        >
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </nav>
+</header>
