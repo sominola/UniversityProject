@@ -54,7 +54,10 @@ public static class ConfigureExtension
         app.UseAuthorization();
 
 
-        app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapRazorPages();
+        });
     }
 
     public static void AddServices(this IServiceCollection services)
@@ -65,7 +68,7 @@ public static class ConfigureExtension
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<AuthService>();
+        services.AddScoped<IAuthService,AuthService>();
         services.AddValidation();
         services.AddRazorPages().AddRazorRuntimeCompilation();
         services.AddHttpContextAccessor();

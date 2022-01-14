@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UniversityProject.Data.Context;
 using UniversityProject.Data.Entities;
-using UniversityProject.Data.Models;
 using UniversityProject.Data.Repositories.Interfaces;
 using UniversityProject.Domain.Dto.User;
+using UniversityProject.Domain.Models;
 using UniversityProject.Domain.Services.Interfaces;
 
 namespace UniversityProject.Domain.Services.Implementation;
@@ -24,12 +24,12 @@ public class UserService: IUserService
         _passwordHasher = new PasswordHasher<User>();
     }
     
-    public async Task<Result<RegisterUserDto>> CreateUserAsync(RegisterUserDto model)
+    public async Task<IResult> CreateUserAsync(RegisterUserDto model)
     {
         var emailTaken = await IsEmailTakenAsync(model.Email);
         if (emailTaken)
         {
-            return Result<RegisterUserDto>.GetError(ErrorCode.Conflict, "Account already exists");
+            return new Result<LoginDto>().SetError(ErrorCode.Conflict, "Account already exists");
         }
         
         try
@@ -41,20 +41,18 @@ public class UserService: IUserService
             await _unitOfWork.UserRepository.AddAsync(user);
             await _unitOfWork.SaveAsync();
 
-            return Result<RegisterUserDto>.GetSuccess(_mapper.Map<RegisterUserDto>(user));
+            return new Result<LoginDto>().Success(_mapper.Map<LoginDto>(user));
         }
         catch
         { 
 
-            return Result<RegisterUserDto>.GetError(ErrorCode.InternalServerError, "Cannot create account.");
+            return new Result<LoginDto>().SetError(ErrorCode.InternalServerError, "Cannot create account.");
         }
     }
 
-    public async Task<bool> IsEmailTakenAsync(string email)
+    private async Task<bool> IsEmailTakenAsync(string email)
     {
         return await _unitOfWork.UserRepository.IsEmailTakenAsync(email);
     }
-    
-    
     
 }
