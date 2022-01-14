@@ -1,61 +1,81 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.JsonWebTokens;
 using UniversityProject.Data.Entities;
-using UniversityProject.Data.Models;
 using UniversityProject.Data.Repositories.Interfaces;
 using UniversityProject.Domain.Dto.User;
+using UniversityProject.Domain.Models;
 using UniversityProject.Domain.Services.Interfaces;
 
 namespace UniversityProject.Domain.Services.Implementation;
 
-public class AuthService
+public class AuthService: IAuthService
 {
     private readonly ITokenService _tokenService;
     private readonly PasswordHasher<User> _passwordHasher;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IHttpContextAccessor _context;
 
-    public AuthService(ITokenService tokenService, IUnitOfWork unitOfWork)
+    public AuthService(ITokenService tokenService, IUnitOfWork unitOfWork, IHttpContextAccessor context)
     {
         _tokenService = tokenService;
         _unitOfWork = unitOfWork;
         _passwordHasher = new PasswordHasher<User>();
+        _context = context;
     }
 
-    public async Task<Result<string>> Login(LoginDto model)
+    public async Task<IResult> Login(LoginDto model)
     {
         var result = await VerifyUserCredentials(model);
-        if (result.Error == null)
-        {
-            var user = result.Data;
-            var claims = new List<Claim>()
-            {
-                new("id", user.Id.ToString()),
-                new(JwtRegisteredClaimNames.Email, user.Email),
-            };
-            foreach (var role in user.Roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role.Name));
-            }
 
-            var jwt = _tokenService.GenerateJwt(claims);
-            return Result<string>.GetSuccess(jwt);
-        }
+        if (!result.IsSuccess)
+            return result;
 
-        return new Result<string>
-        {
-            Error = result.Error
-        };
+        var claims = GenerateClaims(result.Data);
 
+        var jwt = _tokenService.GenerateJwt(claims);
+       _context.HttpContext.Response.Cookies.Append("Token", jwt);
+       return new Result().Success();
     }
 
-    private async Task<Result<User>> VerifyUserCredentials(LoginDto model)
+    public async Task<IResult> Login(string email, string password)
+    {
+        return await Login(new LoginDto
+        {
+            Email = email,
+            Password = password
+        });
+    }
+
+    public Task<IResult> Logout()
+    {
+        _context.HttpContext.Response.Cookies.Delete("Token");
+        return Task.Run(()=>new Result().Success());
+    }
+
+    private IEnumerable<Claim> GenerateClaims(User user)
+    {
+        var claims = new List<Claim>()
+        {
+            new("id", user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email),
+        };
+        foreach (var role in user.Roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role.Name));
+        }
+
+        return claims;
+    }
+
+    private async Task<IResult<User>> VerifyUserCredentials(LoginDto model)
     {
         var user = await _unitOfWork.UserRepository.GetCredentialUserAsync(model.Email);
 
         if (user == null)
         {
-            return Result<User>.GetError(ErrorCode.NotFound, "User not found");
+            return new Result<User>().SetError(ErrorCode.NotFound, "User not found");
         }
 
 
@@ -63,9 +83,12 @@ public class AuthService
 
         if (isVerified == PasswordVerificationResult.Success)
         {
-            return Result<User>.GetSuccess(user);
+            return new Result<User>().Success(user);
         }
-
-        return Result<User>.GetError(ErrorCode.Forbidden, "Password doesn't fit");
+        else
+        {
+            return new Result<User>().SetError(ErrorCode.Forbidden, "Password doesn't fit");
+        }
     }
 }
+

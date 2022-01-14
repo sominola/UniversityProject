@@ -1,42 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using UniversityProject.Domain.Dto.User;
-using UniversityProject.Domain.Services.Implementation;
+using UniversityProject.Domain.Services.Interfaces;
+using UniversityProject.Web.Extensions;
 
 namespace UniversityProject.Web.Pages.Account;
 
 public class LoginModel : PageModel
 {
-    private readonly AuthService _authService;
+    private readonly IAuthService _authService;
     [BindProperty]
     public LoginDto LoginDto { get; set; }
-    public LoginModel(AuthService authService)
+
+    public LoginModel(IAuthService authService)
     {
         _authService = authService;
     }
-    public void OnGet()
+    public IActionResult OnGet()
     {
+        if (User.Identity!.IsAuthenticated)
+            return RedirectToRoute("/");
         
+        return Page();
     }
     
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
+        if (!ModelState.IsValid) return Page();
         
         var result = await _authService.Login(LoginDto);
-        if (result.Error == null)
+        
+        if (result.IsSuccess)
         {
-            HttpContext.Response.Cookies.Append("Token",result.Data);
             return RedirectToPage("Test");
         }
-        else
-        {
-            ModelState.AddModelError("",result.Error.Message);
-        }
-
+        this.AddErrors(result);
         return Page();
     }
 }

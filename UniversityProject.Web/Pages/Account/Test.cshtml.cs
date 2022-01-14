@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace UniversityProject.Web.Pages.Account;
 
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "User")]
 public class TestModel : PageModel
 {
     public void OnGet()

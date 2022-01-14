@@ -1,9 +1,9 @@
-﻿using UniversityProject.Data.Models;
-using UniversityProject.Domain.Dto.User;
+﻿using UniversityProject.Domain.Dto.User;
+using UniversityProject.Domain.Models;
 
 namespace UniversityProject.Domain.Services.Interfaces;
 
 public interface IUserService
 {
-    Task<Result<RegisterUserDto>> CreateUserAsync(RegisterUserDto model);
+    Task<IResult> CreateUserAsync(RegisterUserDto model);
 }

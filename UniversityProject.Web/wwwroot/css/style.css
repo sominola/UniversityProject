@@ -353,6 +353,9 @@ textarea:-ms-input-placeholder {
 .custom-form-wrapper .custom-form-container form .validation ul li{
     color: #dc3545;
 }
+.custom-form-wrapper .custom-form-container form .field-validation-error span{
+    color: #dc3545;
+}
 .custom-form-wrapper .custom-form-container form label {
     color: #000;
     font-size: 15px;
@@ -381,9 +384,14 @@ textarea:-ms-input-placeholder {
     margin-bottom: 30px;
     padding: 0 15px;
 }
+
+.custom-form-wrapper .custom-form-container form input:not([type=checkbox]).input-validation-error{
+    box-shadow: 0 0 3px 1px #dc3545;
+    animation: glowfade 0.4s linear;
+}
 .custom-form-wrapper .custom-form-container form input:not([type=checkbox]):focus {
     box-shadow: 0 0 3px 1px #61B250;
-    animation: glowfade 0.4s linear;
+    /*animation: glowfade 0.4s linear;*/
 }
 
 .button-box .login-toggle-btn {
