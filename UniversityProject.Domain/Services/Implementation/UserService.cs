@@ -1,12 +1,10 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using UniversityProject.Data.Context;
 using UniversityProject.Data.Entities;
 using UniversityProject.Data.Repositories.Interfaces;
 using UniversityProject.Domain.Dto.User;
-using UniversityProject.Domain.Models;
+using UniversityProject.Domain.Exceptions;
 using UniversityProject.Domain.Services.Interfaces;
 
 namespace UniversityProject.Domain.Services.Implementation;
@@ -24,12 +22,12 @@ public class UserService: IUserService
         _passwordHasher = new PasswordHasher<User>();
     }
     
-    public async Task<IResult> CreateUserAsync(RegisterUserDto model)
+    public async Task CreateUserAsync(RegisterUserDto model)
     {
         var emailTaken = await IsEmailTakenAsync(model.Email);
         if (emailTaken)
         {
-            return new Result<LoginDto>().SetError(ErrorCode.Conflict, "Account already exists");
+            throw new ResultException("Account already exists", HttpStatusCode.Conflict);
         }
         
         try
@@ -41,12 +39,11 @@ public class UserService: IUserService
             await _unitOfWork.UserRepository.AddAsync(user);
             await _unitOfWork.SaveAsync();
 
-            return new Result<LoginDto>().Success(_mapper.Map<LoginDto>(user));
         }
         catch
         { 
-
-            return new Result<LoginDto>().SetError(ErrorCode.InternalServerError, "Cannot create account.");
+            
+            throw new ResultException( "Cannot create account.",HttpStatusCode.InternalServerError);
         }
     }
 
