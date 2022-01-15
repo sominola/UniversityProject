@@ -10,6 +10,6 @@ public class RegisterUserDtoValidator:AbstractValidator<RegisterUserDto>
         RuleFor(x => x.FirstName).NotNull().NotEmpty();
         RuleFor(x => x.LastName).NotNull().NotEmpty();
         RuleFor(x => x.Email).NotNull().NotEmpty().EmailAddress();
-        RuleFor(x => x.Password).NotNull().NotEmpty();
+        RuleFor(x => x.Password).NotNull().NotEmpty().Equal(x=>x.ConfirmPassword).WithMessage("Passwords are not the same");
     }
 }

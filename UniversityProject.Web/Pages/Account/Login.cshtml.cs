@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using UniversityProject.Domain.Dto.User;
 using UniversityProject.Domain.Services.Interfaces;
-using UniversityProject.Web.Extensions;
 
 namespace UniversityProject.Web.Pages.Account;
 
@@ -26,15 +25,7 @@ public class LoginModel : PageModel
     
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid) return Page();
-        
-        var result = await _authService.Login(LoginDto);
-        
-        if (result.IsSuccess)
-        {
-            return RedirectToPage("Test");
-        }
-        this.AddErrors(result);
-        return Page();
+         await _authService.Login(LoginDto);
+         return RedirectToPage("Test");
     }
 }

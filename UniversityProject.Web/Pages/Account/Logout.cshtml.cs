@@ -14,11 +14,10 @@ public class LogoutModel : PageModel
         _authService = authService;
     }
     
-    public IActionResult OnGet() =>
-        NotFound();
+    public IActionResult OnGet() => NotFound();
     public async Task<IActionResult> OnPostAsync()
     {
-        var result = await _authService.Logout();
+        await _authService.Logout();
         return RedirectToPage("/Index");
     }
 }
