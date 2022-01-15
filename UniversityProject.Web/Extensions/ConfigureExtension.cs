@@ -12,6 +12,7 @@ using UniversityProject.Domain.Dto.User;
 using UniversityProject.Domain.Mapping;
 using UniversityProject.Domain.Services.Implementation;
 using UniversityProject.Domain.Services.Interfaces;
+using UniversityProject.Web.Filters;
 
 namespace UniversityProject.Web.Extensions;
 
@@ -30,7 +31,7 @@ public static class ConfigureExtension
     {
         if (Environment.IsDevelopment())
         {
-            app.UseDeveloperExceptionPage();
+            // app.UseDeveloperExceptionPage();
         }
         else
         {
@@ -70,7 +71,11 @@ public static class ConfigureExtension
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IAuthService,AuthService>();
         services.AddValidation();
-        services.AddRazorPages().AddRazorRuntimeCompilation();
+        services.AddRazorPages().AddMvcOptions(options =>
+        {
+            options.Filters.Add(new ExceptionHandlerFilter());
+            options.Filters.Add(new ModelValidationFilter());
+        }).AddRazorRuntimeCompilation();
         services.AddHttpContextAccessor();
     }
 
