@@ -31,7 +31,7 @@ public static class ConfigureExtension
     {
         if (Environment.IsDevelopment())
         {
-            // app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
         }
         else
         {
@@ -41,11 +41,12 @@ public static class ConfigureExtension
 
         app.Use(async (context, next) =>
         {
-            var contains = context.Request.Cookies.TryGetValue("Token", out var token); 
-            if (contains && !string.IsNullOrEmpty(token))  
+            var contains = context.Request.Cookies.TryGetValue("Token", out var token);
+            if (contains && !string.IsNullOrEmpty(token))
             {
                 context.Request.Headers.Add("Authorization", "Bearer " + token);
             }
+
             await next();
         });
         app.UseStaticFiles();
@@ -55,10 +56,7 @@ public static class ConfigureExtension
         app.UseAuthorization();
 
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapRazorPages();
-        });
+        app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
     }
 
     public static void AddServices(this IServiceCollection services)
@@ -69,31 +67,27 @@ public static class ConfigureExtension
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IAuthService,AuthService>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ILessonService, LessonService>();
         services.AddValidation();
         services.AddRazorPages().AddMvcOptions(options =>
         {
             options.Filters.Add(new ExceptionHandlerFilter());
             options.Filters.Add(new ModelValidationFilter());
         }).AddRazorRuntimeCompilation();
+        services.AddRouting(options =>
+        {
+            options.LowercaseUrls = true;
+            options.LowercaseQueryStrings = true;
+
+        });
         services.AddHttpContextAccessor();
     }
 
     private static void AddDbContext(this IServiceCollection services)
     {
-        string connectionString;
+        var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
-        if (Environment.IsDevelopment())
-        {
-            connectionString = Configuration.GetConnectionString("DefaultConnection");
-        }
-        else
-        {
-            connectionString = Configuration.GetConnectionString("DefaultConnection");
-        }
-
-        // services.AddDbContext<AppDbContext>(options =>
-        //     options.UseSqlServer(connectionString, x => x.MigrationsAssembly("UniversityProject.Web")));
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
     }
@@ -112,12 +106,12 @@ public static class ConfigureExtension
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
+                    ValidateIssuerSigningKey =
+                        true,
                     ValidIssuer = AuthOptions.Issuer,
                     ValidAudience = AuthOptions.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AuthOptions.Key)),
                 };
-                
             });
     }
 
@@ -130,10 +124,6 @@ public static class ConfigureExtension
 
     private static void AddValidation(this IServiceCollection services)
     {
-        services.AddFluentValidation(cfg =>
-        {
-            cfg.RegisterValidatorsFromAssemblyContaining<LoginDto>();
-        });
+        services.AddFluentValidation(cfg => { cfg.RegisterValidatorsFromAssemblyContaining<LoginDto>(); });
     }
-    
 }
