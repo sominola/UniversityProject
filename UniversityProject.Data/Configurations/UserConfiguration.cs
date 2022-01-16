@@ -20,6 +20,8 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
 
         builder.Property(e => e.HashedPassword).HasColumnName("password").HasMaxLength(100);
 
+        builder.Property(e => e.RegisteredDate).HasColumnName("register_date").HasDefaultValue(DateTime.UtcNow);
+        
         builder.HasMany(e => e.Roles).WithMany(x => x.Users).UsingEntity(j=>j.ToTable("UserRoles"));
 
     }

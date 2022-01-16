@@ -9,4 +9,5 @@ public class User: BaseEntity
     
     public DateTime RegisteredDate { get; set; }
     public List<Role> Roles { get; set; }
+    public List<Lesson> Lessons { get; set; }
 }
