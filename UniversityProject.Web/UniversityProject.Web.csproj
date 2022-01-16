@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\UniversityProject.Domain\UniversityProject.Domain.csproj" />
+        <ProjectReference Include="..\UniversityProject.Domain\UniversityProject.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -15,6 +15,10 @@
       <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
     </ItemGroup>
 
