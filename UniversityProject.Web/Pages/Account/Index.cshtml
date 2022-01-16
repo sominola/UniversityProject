@@ -1,0 +1,60 @@
+﻿@page
+@model AccountModel
+<div class="container" style="margin: 75px auto;">
+    <div class="row">
+        <div class="ml-auto mr-auto col-lg-7 mx-auto">
+            <div class="checkout-wrapper">
+                <div id="faq" class="panel-group">
+                    <div class="panel panel-default single-my-account">
+                        <div class="panel-heading my-account-title">
+                            <h3 class="panel-title">
+                                <span>1 .</span> <a data-bs-toggle="collapse" data-parent="#faq" href="#my-account-1">Edit your account information </a>
+                            </h3>
+                        </div>
+                        <div id="my-account-1" class="panel-collapse collapse show">
+                            <div class="panel-body">
+                                <form method="post">
+                                    <div class="myaccount-info-wrapper">
+                                        <div class="account-info-wrapper">
+                                            <h4>My Account Information</h4>
+                                            <div class="validation" asp-validation-summary="ModelOnly"></div>
+                                        </div>
+                                        <div class="row" style="margin-top: 25px;">
+                                            <div class="col-lg-6 col-md-6">
+                                                <label>First Name</label>
+                                                <input type="text" asp-for="UpdateUserDto.FirstName">
+                                                <span asp-validation-for="UpdateUserDto.FirstName"></span>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6">
+                                                <label>Last Name</label>
+                                                <input type="text" asp-for="UpdateUserDto.LastName">
+                                                <span asp-validation-for="UpdateUserDto.LastName"></span>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6">
+                                                <label>Email Address</label>
+                                                <input type="email" asp-for="UpdateUserDto.Email">
+                                                <span asp-validation-for="UpdateUserDto.Email"></span>
+                                            </div>
+                                        </div>
+                                        <div class="button-box">
+                                            <div class="billing-back">
+                                                <button style="float: none" type="submit">Continue</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default single-my-account">
+                        <div class="panel-heading my-account-title">
+                            <h3 class="panel-title">
+                                <span>2 .</span> <a href="#"> Change your password </a>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

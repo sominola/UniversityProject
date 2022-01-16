@@ -9,10 +9,11 @@ public sealed class AppDbContext: DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
+    public DbSet<Lesson> Lessons { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
-        Database.EnsureCreated();
+        // Database.EnsureCreated();
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
