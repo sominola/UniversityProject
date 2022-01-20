@@ -1,0 +1,224 @@
+﻿@model IndexModel
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center d-inline-block">
+                    <h5 class="card-title m-b-0 d-inline">List users of @Model.LessonDto.Name lesson</h5>
+                    <button class="btn btn-outline-primary float-end" data-bs-toggle="modal" data-bs-target="#listUsersModal">Add</button>
+                </div>
+                <div class="modal" id="listUsersModal" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel" style="font-size: 1.25rem">List of new users</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="table-responsive">
+                                    <table id="tableNewUsers" class="table">
+                                        <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="listNewUsers" class="customtable">
+                                        </tbody>
+                                        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                                          <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                            <div class="toast-body">
+                                              The lesson can have a maximum of two teachers 
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table id="tableUsers" class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="listUsers" class="customtable">
+                        @foreach (var teacher in Model.LessonDto?.Teachers)
+                        {
+                            <tr class="data-tr">
+                                <td>@teacher.Id</td>
+                                <td>Teacher</td>
+                                <td>@($"{teacher.FirstName} {teacher.LastName}")</td>
+                                <td>@teacher.Email</td>
+                                <td>
+                                    <button lessonId="@Model.LessonDto.Id" userId="@teacher.Id" class="btn btn-outline-danger TeacherRemove">Remove</button>
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var student in Model.LessonDto?.Students)
+                        {
+                            <tr class="data-tr">
+                                <td>@student.Id</td>
+                                <td>Student</td>
+                                <td>@($"{student.FirstName} {student.LastName}")</td>
+                                <td>@student.Email</td>
+                                <td>
+                                    <button lessonId="@Model.LessonDto.Id" userId="@student.Id" class="btn btn-outline-danger StudentRemove">Remove</button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script >
+const urlAddStudent = '@Url.Page("Index", "AddStudentLesson")';
+const urlRemoveStudent = '@Url.Page("Index", "RemoveStudentLesson")';
+const urlAddTeacher = '@Url.Page("Index","AddTeacherLesson")';
+const urlRemoveTeacher = '@Url.Page("Index","RemoveTeacherLesson")';
+const urlStudentExcludeLesson = '@Url.Page("Index", "StudentsExcludeLesson")';
+
+$(function() {
+    addEventsToListUser();
+    addEventsToStudentAdd();
+    addEventsToStudentRemove();
+    addEventsToTeacherAdd();
+    addEventsToTeacherRemove();
+})
+
+function addEventsToListUser() {
+    const modal = $("#listUsersModal");
+    const lessonId = '@Model.LessonDto.Id';
+    const data = {lessonId:lessonId};
+    modal.on("shown.bs.modal", function() {
+        ajax("Get",data,urlStudentExcludeLesson, function(data) {
+            console.log(data);
+            $.each(data.students, function(i, student) {
+                const button = $('<button class="btn btn-outline-primary">Add</button>');
+                button.attr(`userId`, `${student.id}`);
+                button.addClass("StudentAdd");
+                button.attr(`lessonId`, `${lessonId}`);
+                const $tr = $('<tr>').append(
+                    $('<td>').text(student.id),
+                    $('<td>').text("Student"),
+                    $('<td>').text(`${student.firstName} ${student.lastName}`),
+                    $('<td>').text(student.email),
+                    $('<td>').append(button)
+                ).addClass("data-tr").appendTo('#tableNewUsers');
+            });
+            $.each(data.teachers, function(i, teacher) {
+                const button = $('<button class="btn btn-outline-primary">Add</button>');
+                button.attr(`lessonId`, `${lessonId}`);
+                button.attr(`userId`, `${teacher.id}`);
+                button.addClass("TeacherAdd");
+                const $tr = $('<tr>').append(
+                    $('<td>').text(teacher.id),
+                    $('<td>').text("Teacher"),
+                    $('<td>').text(`${teacher.firstName} ${teacher.lastName}`),
+                    $('<td>').text(teacher.email),
+            
+                    $('<td>').append(button)
+                ).appendTo('#tableNewUsers');
+            });
+        });
+    })
+    modal.on("hidden.bs.modal", function() {
+        $("#listNewUsers").find("tr").remove();
+    })
+}
+
+function addEventsToStudentAdd() {
+    $(document).on("click", ".StudentAdd", function() {
+        const button = $(this);
+        button.prop('disabled', true);
+        const lessonId = button.attr('lessonId');
+        const userId = button.attr('userId');
+        const data = {lessonId: lessonId, studentId: userId};
+        ajax("Post",data, urlAddStudent,function (data){
+            const tr =  button.closest("tr").remove().clone();
+            const buttonTr = tr.find("button");
+            buttonTr.removeClass("btn-outline-primary StudentAdd")
+            buttonTr.addClass("btn btn-outline-danger StudentRemove");
+            buttonTr.text("Remove");
+            buttonTr.prop('disabled',false);
+            $("#tableUsers").append(tr); 
+        })
+    });
+}
+function addEventsToStudentRemove() {
+    $(document).on("click", ".StudentRemove", function() {
+        const button = $(this);
+        const lessonId = button.attr('lessonId');
+        const studentId = button.attr('userId');
+        const data = {lessonId: lessonId, studentId: studentId};
+        ajax("Post",data,urlRemoveStudent,function (data){
+            const row = button.closest("tr").remove();
+        })
+    })
+}
+
+function addEventsToTeacherAdd(){
+    $(document).on("click", ".TeacherAdd", function() {
+            const button = $(this);
+            button.prop('disabled', true);
+            const lessonId = button.attr('lessonId');
+            const userId = button.attr('userId');
+            const data = {lessonId: lessonId, teacherId: userId};
+            ajax("Post",data,urlAddTeacher,function (data){
+                const tr = button.closest("tr").remove().clone();
+                const buttonTr = tr.find("button");
+                buttonTr.removeClass("btn-outline-primary TeacherAdd")
+                buttonTr.addClass("btn btn-outline-danger TeacherRemove");
+                buttonTr.text("Remove");
+                buttonTr.prop('disabled',false);
+                $("#tableUsers").append(tr);
+            },
+            function (){
+                var myAlert =document.getElementById('liveToast');//select id of toast
+                    var bsAlert = new bootstrap.Toast(myAlert);//inizialize it
+                    bsAlert.show();
+            })
+        })
+}
+function addEventsToTeacherRemove(){
+    $(document).on("click", ".TeacherRemove", function() {
+            const button = $(this);
+            const lessonId = button.attr('lessonId');
+            const userId = button.attr('userId');
+            const data = {lessonId: lessonId, teacherId: userId};
+            ajax("Post",data,urlRemoveTeacher,function (data){
+                const row = button.closest("tr").remove();
+            })
+        })
+}
+
+function ajax(method,data,url,callback,callbackFailed){
+$.ajax({
+    method:method,
+    data: data,
+    url: `${url}`,
+    headers: {
+      "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val()
+    },
+    success: function (data){
+        callback(data);
+    },
+    error: function (){
+        callbackFailed(data);
+    }
+});
+}
+</script>

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using UniversityProject.Domain.Dto.User;
 using UniversityProject.Domain.Services.Interfaces;
-using UniversityProject.Web.Extensions;
 
 namespace UniversityProject.Web.Pages.Account;
 
@@ -22,7 +21,8 @@ public class RegisterModel : PageModel
     public IActionResult OnGet()
     {
         if (User.Identity!.IsAuthenticated)
-            return RedirectToRoute("/");
+            return RedirectToPage("/Index");
+
 
         return Page();
     }
@@ -31,6 +31,6 @@ public class RegisterModel : PageModel
     {
         await _userService.CreateUserAsync(RegisterDto);
         await _authService.Login(RegisterDto.Email, RegisterDto.Password);
-        return RedirectToPage("/index");
+        return RedirectToPage("/Index");
     }
 }

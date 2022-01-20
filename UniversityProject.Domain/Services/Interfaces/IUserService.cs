@@ -6,5 +6,5 @@ public interface IUserService
 {
     Task CreateUserAsync(RegisterUserDto model);
     Task<UpdateUserDto> GetCurrentUserAsync();
-    Task UpdateUserAsync(UpdateUserDto model);
+    Task UpdateCredentialsAsync(UpdateUserDto model);
 }

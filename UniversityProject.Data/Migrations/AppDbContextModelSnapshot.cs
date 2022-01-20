@@ -22,21 +22,6 @@ namespace UniversityProject.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("LessonUser", b =>
-                {
-                    b.Property<long>("LessonsId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UsersId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("LessonsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("UserLesson", (string)null);
-                });
-
             modelBuilder.Entity("RoleUser", b =>
                 {
                     b.Property<long>("RolesId")
@@ -72,6 +57,36 @@ namespace UniversityProject.Data.Migrations
                     b.ToTable("Lesson", (string)null);
                 });
 
+            modelBuilder.Entity("UniversityProject.Data.Entities.LessonTeacher", b =>
+                {
+                    b.Property<long>("LessonId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TeacherId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("LessonId", "TeacherId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("LessonTeacher");
+                });
+
+            modelBuilder.Entity("UniversityProject.Data.Entities.LessonUser", b =>
+                {
+                    b.Property<long>("LessonId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("StudentId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("LessonId", "StudentId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("LessonUser");
+                });
+
             modelBuilder.Entity("UniversityProject.Data.Entities.Role", b =>
                 {
                     b.Property<long>("Id")
@@ -95,11 +110,16 @@ namespace UniversityProject.Data.Migrations
                         new
                         {
                             Id = 1L,
-                            Name = "User"
+                            Name = "Student"
                         },
                         new
                         {
                             Id = 2L,
+                            Name = "Teacher"
+                        },
+                        new
+                        {
+                            Id = 3L,
                             Name = "Admin"
                         });
                 });
@@ -139,27 +159,12 @@ namespace UniversityProject.Data.Migrations
                     b.Property<DateTime>("RegisteredDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2022, 1, 15, 22, 40, 5, 590, DateTimeKind.Utc).AddTicks(609))
-                        .HasColumnName("register_date");
+                        .HasColumnName("register_date")
+                        .HasDefaultValueSql("getutcdate()");
 
                     b.HasKey("Id");
 
                     b.ToTable("User", (string)null);
-                });
-
-            modelBuilder.Entity("LessonUser", b =>
-                {
-                    b.HasOne("UniversityProject.Data.Entities.Lesson", null)
-                        .WithMany()
-                        .HasForeignKey("LessonsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UniversityProject.Data.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -175,6 +180,44 @@ namespace UniversityProject.Data.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("UniversityProject.Data.Entities.LessonTeacher", b =>
+                {
+                    b.HasOne("UniversityProject.Data.Entities.Lesson", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UniversityProject.Data.Entities.User", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("UniversityProject.Data.Entities.LessonUser", b =>
+                {
+                    b.HasOne("UniversityProject.Data.Entities.Lesson", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UniversityProject.Data.Entities.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("Student");
                 });
 #pragma warning restore 612, 618
         }

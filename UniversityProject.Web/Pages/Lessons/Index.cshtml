@@ -1,0 +1,15 @@
+﻿@page
+@using UniversityProject.Data.Constants
+@model IndexModel
+@{
+    ViewBag.Title = "Lessons";
+}
+@if (User.IsInRole(UserRole.Admin))
+{
+    @(await Html.PartialAsync("LessonsAdminPartial"))
+}
+else
+{
+    @(await Html.PartialAsync("LessonsPartial"))
+
+}

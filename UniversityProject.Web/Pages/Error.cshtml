@@ -1,0 +1,68 @@
+﻿@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error " + Model.ErrorStatusCode;
+}
+
+<style>
+  .container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 70vh;
+  }
+  .content {
+    width: 600px;
+    margin: 20px;
+    background: white;
+    padding: 60px 40px;
+    text-align: center;
+    box-shadow: -10px 10px 67px -12px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    animation: apparition 0.3s 0.1s cubic-bezier(0.39, 0.575, 0.28, 0.995) forwards;
+  }
+  .content p:not(:last-child) {
+    font-size: 1.3rem;
+    margin-top: 0;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.1rem;
+    color: #595959;
+  }
+  .content a {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    border: 3px solid #595959;
+    background: transparent;
+    font-size: 1rem;
+    color: #595959;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  @@keyframes apparition {
+    from {
+      opacity: 0;
+      transform: translateY(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+</style>
+<div class="container">
+    <article class="content">
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <p>@Model.Message</p>
+        }
+        <p>You got lost in the <strong>@Model.ErrorStatusCode</strong> galaxy.</p>
+        <p>
+            <a href="/">Back to home</a>
+        </p>
+    </article>
+</div>

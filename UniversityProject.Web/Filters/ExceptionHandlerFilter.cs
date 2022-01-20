@@ -1,39 +1,45 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using UniversityProject.Data.Exceptions;
 using UniversityProject.Domain.Exceptions;
 
 namespace UniversityProject.Web.Filters;
 
-public class ExceptionHandlerFilter: IAsyncExceptionFilter
+public class ExceptionHandlerFilter : IAsyncExceptionFilter
 {
-
     public Task OnExceptionAsync(ExceptionContext context)
     {
         var exception = context.Exception;
-        context.ExceptionHandled = true;
+        if (exception is DbNotFoundException)
+        {
+            context.ExceptionHandled = true;
+            context.Result = new NotFoundResult();
+        
+            return Task.CompletedTask;
+        }
 
-        if (exception is ResultException resultException)
+        if (exception is ResultException)
         {
-            context.HttpContext.Response.StatusCode = (int)resultException.Code;
-            if (resultException.IsApiException)
+            context.ExceptionHandled = true;
+            switch (exception)
             {
-                context.HttpContext.Response.WriteAsJsonAsync(exception.Message);
+                case PageResultException pageException:
+                    context.HttpContext.Response.StatusCode = (int) pageException.Code;
+                    context.ModelState.AddModelError("", pageException.Message);
+                    context.Result = new PageResult();
+                    break;
+                case CodePageResultException codePageException:
+                    context.Result = new StatusCodeResult((int) codePageException.Code);
+                    break;
+                case ApiResultException apiException:
+                    context.HttpContext.Response.WriteAsJsonAsync(apiException.Message);
+                    break;
             }
-            else
-            {
-                context.HttpContext.Response.StatusCode = (int)resultException.Code;
-                context.ModelState.AddModelError("",resultException.Message);
-                context.Result = new PageResult();
-            }
-         
         }
-        else
-        {
-            context.HttpContext.Response.StatusCode = 500;
-            context.HttpContext.Response.WriteAsJsonAsync(exception.Message);
-        }
+        
+
 
         return Task.CompletedTask;
     }
-    
 }

@@ -35,6 +35,13 @@
                                                 <input type="email" asp-for="UpdateUserDto.Email">
                                                 <span asp-validation-for="UpdateUserDto.Email"></span>
                                             </div>
+                                            @{
+                                                var roles = string.Join(" ", Model.UpdateUserDto.Roles);
+                                               <div class="col-lg-6 col-md-6">
+                                                   <label>Roles</label>
+                                                   <input type="text" asp-for="UpdateUserDto.Roles" readonly value="@roles">
+                                               </div>
+                                           }
                                         </div>
                                         <div class="button-box">
                                             <div class="billing-back">

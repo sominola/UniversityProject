@@ -1,6 +1,4 @@
 ﻿using System.Security.Claims;
-using UniversityProject.Data.Entities;
-using UniversityProject.Data.Repositories.Interfaces;
 
 namespace UniversityProject.Domain.Extensions;
 

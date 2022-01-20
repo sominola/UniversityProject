@@ -9,7 +9,7 @@ using UniversityProject.Domain.Exceptions;
 using UniversityProject.Domain.Extensions;
 using UniversityProject.Domain.Services.Interfaces;
 
-namespace UniversityProject.Domain.Services.Implementation;
+namespace UniversityProject.Domain.Services;
 
 public class UserService: IUserService
 {
@@ -30,7 +30,7 @@ public class UserService: IUserService
         var emailTaken = await IsEmailTakenAsync(model.Email);
         if (emailTaken)
         {
-            throw new ResultException("Account already exists", HttpStatusCode.Conflict);
+            throw new PageResultException("Account already exists", HttpStatusCode.Conflict);
         }
         
         try
@@ -46,7 +46,7 @@ public class UserService: IUserService
         catch
         { 
             
-            throw new ResultException( "Cannot create account.",HttpStatusCode.InternalServerError);
+            throw new PageResultException( "Cannot create account.",HttpStatusCode.InternalServerError);
         }
     }
 
@@ -54,15 +54,24 @@ public class UserService: IUserService
     {
         var id = _context.HttpContext.User.GetCurrentUserId();
         var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+        var roles = await _unitOfWork.RoleRepository.GetRolesByUserAsync(id);
+        user.Roles = roles;
         return _mapper.Map<UpdateUserDto>(user);
     }
     
     
-    public async Task UpdateUserAsync(UpdateUserDto model)
+    public async Task UpdateCredentialsAsync(UpdateUserDto model)
     {
+        
+        var userId = _context.HttpContext.User.GetCurrentUserId();
+        var isSameEmail = await _unitOfWork.UserRepository.GetEmailByAsync(userId) == model.Email;
+            
+        if (!isSameEmail && await IsEmailTakenAsync(model.Email))
+            throw new PageResultException("This email is taken", HttpStatusCode.Conflict);
+        
         var user = _mapper.Map<User>(model);
-        user.Id = _context.HttpContext.User.GetCurrentUserId();
-        await _unitOfWork.UserRepository.UpdateAsync(user);
+        user.Id = userId;
+        await _unitOfWork.UserRepository.UpdateCredentialsAsync(user);
         await _unitOfWork.SaveAsync();
     }
     

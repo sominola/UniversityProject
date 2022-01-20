@@ -10,6 +10,10 @@ public class UserMapper : Profile
     {
         CreateMap<RegisterUserDto, User>().ReverseMap();
         CreateMap<RegisterUserDto, LoginDto>().ReverseMap();
-        CreateMap<UpdateUserDto, User>().ReverseMap();
+        CreateMap<UserDto, User>().ReverseMap();
+        CreateMap<User, UpdateUserDto>()
+            .ForMember(x => x.Roles, y => y.MapFrom(x => x.Roles));
+        CreateMap<UpdateUserDto, User>()
+            .ForMember(x => x.Roles, y => y.Ignore());
     }
 }

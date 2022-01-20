@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using UniversityProject.Domain.Services.Interfaces;
-using UniversityProject.Web.Extensions;
 
 namespace UniversityProject.Web.Pages.Account;
 

@@ -9,7 +9,7 @@ using UniversityProject.Domain.Dto.User;
 using UniversityProject.Domain.Exceptions;
 using UniversityProject.Domain.Services.Interfaces;
 
-namespace UniversityProject.Domain.Services.Implementation;
+namespace UniversityProject.Domain.Services;
 
 public class AuthService: IAuthService
 {
@@ -71,7 +71,7 @@ public class AuthService: IAuthService
 
         if (user == null)
         {
-            throw new ResultException("User not found",HttpStatusCode.NotFound);
+            throw new PageResultException("User not found",HttpStatusCode.NotFound);
         }
 
 
@@ -83,7 +83,7 @@ public class AuthService: IAuthService
         }
         else
         {
-            throw new ResultException("Password doesn't fit",HttpStatusCode.Forbidden);
+            throw new PageResultException("Password doesn't fit",HttpStatusCode.Forbidden);
         }
     }
 }
