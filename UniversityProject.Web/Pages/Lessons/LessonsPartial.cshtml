@@ -1,0 +1,58 @@
+﻿@model IndexModel
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title m-b-0">List of Lessons</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Count Students</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody class="customtable">
+                        @foreach (var lesson in Model?.LessonsUserDto?.Lessons)
+                        {
+                            <tr class="data-tr" data-href="/lesson/@lesson.Id">
+                                <td>@lesson.Id</td>
+                                <td>@lesson.Name</td>
+                                <td>@lesson.CountStudents</td>
+                                <form method="post">
+
+                                    @if (!lesson.IsUserLesson)
+                                    {
+                                        <td>
+                                            <button class="btn btn-outline-primary btn-round" asp-page-handler="Join" name="lessonId" value="@lesson.Id">Join</button>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <button class="btn btn-outline-danger" asp-page-handler="Leave" name="lessonId" value="@lesson.Id">Leave</button>
+                                        </td>
+                                    }
+                                </form>
+
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(function() {
+    $("tr.data-tr").click(function() {
+        window.location =  $(this).data("href");
+    });
+});
+</script>

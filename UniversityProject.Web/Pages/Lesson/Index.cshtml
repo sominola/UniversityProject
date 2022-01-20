@@ -1,0 +1,16 @@
+﻿@page "{lessonId}"
+@{
+    ViewData["Title"] = "Lesson " + Model.LessonDto.Name;
+
+}
+@using UniversityProject.Data.Constants
+@model IndexModel
+@if (User.IsInRole(UserRole.Admin))
+{
+    @(await Html.PartialAsync("LessonAdminPartial"))
+}
+else
+{
+    @(await Html.PartialAsync("LessonPartial"))
+
+}

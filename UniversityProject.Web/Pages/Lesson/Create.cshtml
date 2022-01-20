@@ -1,0 +1,29 @@
+﻿@page
+@model CreateModel
+@{
+    ViewData["Title"] = "Create lesson";
+}
+<div class="container" style="margin: 75px auto;">
+    <div class="custom-form">
+        <h3 style="margin-right: auto;">@ViewBag.Title</h3>
+        <div class="row justify-content-center">
+            <div class="custom-form-wrapper col-lg-7 col-md-12">
+                <div class="custom-form-container">
+                    <form method="post">
+                        <div class="validation" asp-validation-summary="ModelOnly"></div>
+                        
+                        <label asp-for="LessonDto.Name"></label><br/>
+                        <span asp-validation-for="LessonDto.Name"></span>
+                        <input asp-for="LessonDto.Name" type="text" placeholder="Name">
+
+                        <div class="button-box">
+                            <button type="submit">
+                                <span>Create</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+﻿@model IndexModel
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title m-b-0">List users of @Model.LessonDto.Name lesson</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Email</th>
+                        </tr>
+                        </thead>
+                        <tbody class="customtable">
+                        @foreach (var teacher in Model.LessonDto?.Teachers)
+                        {
+                            <tr class="data-tr">
+                                <td>@teacher.Id</td>
+                                <td>Teacher</td>
+                                <td>@($"{teacher.FirstName} {teacher.LastName}")</td>
+                                <td>@teacher.Email</td>
+                            </tr>
+                        }
+                        @foreach (var student in Model.LessonDto?.Students)
+                        {
+                            <tr class="data-tr">
+                                <td>@student.Id</td>
+                                <td>Student</td>
+                                <td>@($"{student.FirstName} {student.LastName}")</td>
+                                <td>@student.Email</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
