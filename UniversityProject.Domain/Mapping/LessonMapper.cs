@@ -8,6 +8,13 @@ public class LessonMapper : Profile
 {
     public LessonMapper()
     {
-        CreateMap<List<Lesson>, LessonIndexDto>().ForMember(x => x.UserLessons, y => y.MapFrom(z => z)).ReverseMap();
+        CreateMap<Lesson, LessonCabinetDto>()
+            .ForMember(x => x.Id, y => y.MapFrom(z => z.Id))
+            .ForMember(x => x.Name, y => y.MapFrom(z => z.Name))
+            .ForMember(x => x.CountStudents, y => y.MapFrom(z => z.Students.Count));
+        CreateMap<Lesson, LessonDto>()
+            .ForMember(x => x.Name, y => y.MapFrom(z => z.Name))
+            .ForMember(x => x.Students, y => y.MapFrom(z => z.Students))
+            .ForMember(x => x.Teachers, y => y.MapFrom(z => z.Teachers));
     }
 }
