@@ -20,7 +20,7 @@ public class AccountModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        await _userService.UpdateUserAsync(UpdateUserDto);
+        await _userService.UpdateCredentialsAsync(UpdateUserDto);
         return RedirectToPage("/Account/Index");
     }
     

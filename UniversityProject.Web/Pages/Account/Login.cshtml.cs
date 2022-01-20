@@ -18,7 +18,7 @@ public class LoginModel : PageModel
     public IActionResult OnGet()
     {
         if (User.Identity!.IsAuthenticated)
-            return RedirectToRoute("/");
+            return RedirectToPage("/Index");
         
         return Page();
     }
@@ -26,6 +26,6 @@ public class LoginModel : PageModel
     public async Task<IActionResult> OnPostAsync()
     {
          await _authService.Login(LoginDto);
-         return RedirectToPage("Test");
+         return RedirectToPage("/Index");
     }
 }
