@@ -2,7 +2,7 @@
 
 public class AuthOptions
 {
-    public const string Issuer = "MyAuthServer";
-    public const string Audience = "MyAuthClient";
-    public const string Key = "SuperSecretKeySuperSecretKeySuperSecretKeySuperSecretKey";
+    public const string Issuer = "University.Web";
+    public const string Audience = "University.Client";
+    public const string Key = "UniversalUniversitySuperSecretKeyJwtAuth";
 }
