@@ -9,8 +9,7 @@ using UniversityProject.Data.Entities;
 using UniversityProject.Data.Repositories.Interfaces;
 using UniversityProject.Domain.Services.Interfaces;
 
-
-namespace UniversityProject.Domain.Services.Implementation;
+namespace UniversityProject.Domain.Services;
 
 public class TokenService : ITokenService
 {
