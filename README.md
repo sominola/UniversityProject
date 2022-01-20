@@ -2,6 +2,8 @@
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/sominola/UniversityProject/Build%20and%20deploy?style=flat-square)](https://github.com/sominola/UniversityProject/actions/workflows/workflow.yml)
 
 [Test Website](http://university-project.azurewebsites.net/)
+### Admin credential: 
+admin:admin
 
 ### Database Configuration
 Add connection string to the file appsettings.json
