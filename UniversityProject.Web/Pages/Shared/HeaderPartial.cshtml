@@ -19,12 +19,12 @@
                     <li class="nav-item">
                         <a class="nav-link" asp-page="/Index">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-page="/Cabinet/Index">Cabinet</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
+                   @if (User.Identity.IsAuthenticated)
+                   {
+                       <li class="nav-item">
+                           <a class="nav-link" asp-page="/Lessons/Index">Lessons</a>
+                       </li>
+                   }
                 </ul>
                 <nav class="nav nav-pills flex-column flex-sm-row icon-nav">
                     <li class="nav-item dropdown">
