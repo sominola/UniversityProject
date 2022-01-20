@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +9,10 @@ using UniversityProject.Data.Repositories.Interfaces;
 using UniversityProject.Domain;
 using UniversityProject.Domain.Dto.User;
 using UniversityProject.Domain.Mapping;
-using UniversityProject.Domain.Services.Implementation;
+using UniversityProject.Domain.Services;
 using UniversityProject.Domain.Services.Interfaces;
 using UniversityProject.Web.Filters;
+using UniversityProject.Web.Middlewares;
 
 namespace UniversityProject.Web.Extensions;
 
@@ -38,23 +38,16 @@ public static class ConfigureExtension
             app.UseExceptionHandler("/Error");
             app.UseHsts();
         }
+        app.UseJwtTokens();
+        app.UseStatusCodePagesWithReExecute("/error", "?code={0}");
+        app.UseHttpsRedirection();
 
-        app.Use(async (context, next) =>
-        {
-            var contains = context.Request.Cookies.TryGetValue("Token", out var token);
-            if (contains && !string.IsNullOrEmpty(token))
-            {
-                context.Request.Headers.Add("Authorization", "Bearer " + token);
-            }
 
-            await next();
-        });
         app.UseStaticFiles();
         app.UseRouting();
-
+     
         app.UseAuthentication();
         app.UseAuthorization();
-
 
         app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
     }
@@ -69,6 +62,7 @@ public static class ConfigureExtension
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ILessonService, LessonService>();
+        services.AddScoped<ILessonService, LessonService>();
         services.AddValidation();
         services.AddRazorPages().AddMvcOptions(options =>
         {
@@ -79,11 +73,15 @@ public static class ConfigureExtension
         {
             options.LowercaseUrls = true;
             options.LowercaseQueryStrings = true;
-
         });
         services.AddHttpContextAccessor();
+        services.AddCors();
     }
 
+    private static void UseJwtTokens(this IApplicationBuilder builder)
+    { 
+        builder.UseMiddleware<JwtTokenMiddleware>();
+    }
     private static void AddDbContext(this IServiceCollection services)
     {
         var connectionString = Configuration.GetConnectionString("DefaultConnection");
@@ -117,13 +115,13 @@ public static class ConfigureExtension
 
     private static void AddMapper(this IServiceCollection services)
     {
-        var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile(new UserMapper()); });
-        var mapper = mappingConfig.CreateMapper();
-        services.AddSingleton(mapper);
+        services.AddAutoMapper(typeof(UserMapper));
     }
 
     private static void AddValidation(this IServiceCollection services)
     {
         services.AddFluentValidation(cfg => { cfg.RegisterValidatorsFromAssemblyContaining<LoginDto>(); });
     }
+    
+  
 }
